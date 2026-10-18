@@ -207,6 +207,53 @@ table.rank td,table.rank th{border-bottom:1px solid var(--line);padding:7px;text
 .big3 b{display:block;font-family:Jua,'Noto Sans KR',sans-serif;font-weight:400;font-size:23px;margin:4px 0}
 @media (prefers-reduced-motion: reduce){.myturn,.tile.go,.cards.deal .pcard,.pcard.pick,.chest,.pc-art svg{animation:none!important}}
 footer{text-align:center;color:#6b739c;font-size:12px;margin-top:8px}
+.golemBox{position:relative}
+.party{position:relative;width:min(760px,96vw);height:min(600px,92vh);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.partyTxt{font-size:40px;color:#fde68a;text-shadow:0 0 18px rgba(251,191,36,.6);animation:pop .6s cubic-bezier(.3,1.6,.5,1) both;z-index:3}
+@keyframes pop{from{transform:scale(.2);opacity:0}}
+.confetti{position:absolute;inset:0;pointer-events:none}
+.confetti i{position:absolute;top:-20px;width:9px;height:14px;border-radius:2px;opacity:.9;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.jarMini{position:absolute;top:70px;right:8%;font-size:46px;filter:drop-shadow(0 0 10px #93c5fd);animation:float 2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.ring{--R:min(160px,27vmin);position:relative;width:calc(var(--R) * 2 + 150px);height:calc(var(--R) * 2 + 150px);margin-top:6px;animation:spin 4s cubic-bezier(.4,0,.6,1) 2.3s 1 both}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ringLine{position:absolute;left:50%;top:50%;width:calc(var(--R) * 2);height:calc(var(--R) * 2);margin:calc(var(--R) * -1) 0 0 calc(var(--R) * -1);border:5px solid #fde68a;border-radius:50%;opacity:0;animation:fadein .5s 2s forwards;box-shadow:0 0 16px rgba(253,230,138,.6)}
+@keyframes fadein{to{opacity:.85}}
+.dancer{position:absolute;left:50%;top:50%;width:130px;height:168px;margin:-96px 0 0 -65px;transform:rotate(var(--a)) translateY(calc(var(--R) * -1)) rotate(calc(var(--a) * -1))}
+.runner{animation:runin 1.8s cubic-bezier(.25,.8,.35,1) both}
+@keyframes runin{from{transform:translateX(var(--from))}}
+.up{text-align:center;animation:spin 4s cubic-bezier(.4,0,.6,1) 2.3s 1 reverse both}
+.up b{display:block;font-family:Jua,'Noto Sans KR',sans-serif;font-weight:400;font-size:19px;color:#fff;text-shadow:0 2px 6px #000;white-space:nowrap}
+.bob{width:130px;height:146px;animation:bob .18s ease-in-out 10,bob .2s ease-in-out 2.3s 20,bigjump .9s cubic-bezier(.3,0,.4,1) 6.3s 1,hop .6s ease-in-out 7.4s infinite}
+.bob svg{width:100%;height:100%}
+@keyframes bob{50%{transform:translateY(-7px) rotate(-4deg)}}
+@keyframes hop{50%{transform:translateY(-12px)}}
+@keyframes bigjump{0%{transform:none}22%{transform:translateY(8px) scale(1.08,.86)}55%{transform:translateY(-78px) scale(.95,1.08) rotate(-6deg)}82%{transform:translateY(0) scale(1.1,.88)}100%{transform:none}}
+.ringLine{animation:fadein .5s 2s forwards,glowp .9s 6.6s 1}
+@keyframes glowp{50%{box-shadow:0 0 60px 20px rgba(253,230,138,.9);border-color:#fff}}
+.partyTxt{animation:pop .6s cubic-bezier(.3,1.6,.5,1) both,pulse .6s 6.8s 1}
+@keyframes pulse{50%{transform:scale(1.25)}}
+.partyBtn{z-index:3;margin-top:10px;animation:btnIn .4s 7.6s both}
+@keyframes btnIn{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion: reduce){.ring,.up,.bob,.runner,.confetti i,.jarMini{animation:none!important}.ringLine,.partyBtn{opacity:1;animation:none}}
+.golemBox.hit{animation:gshake .35s}
+@keyframes gshake{0%,100%{transform:none;filter:none}20%{transform:translateX(-8px) rotate(-2deg);filter:brightness(2.2)}50%{transform:translateX(7px) rotate(2deg)}75%{transform:translateX(-4px)}}
+#cannonBall{position:absolute;left:50%;bottom:-10px;font-size:30px;opacity:0;pointer-events:none;z-index:2}
+#cannonBall.fly{animation:cfly .3s ease-in}
+@keyframes cfly{0%{opacity:1;transform:translate(-50%,40px) scale(1.3)}90%{opacity:1;transform:translate(-50%,-110px) scale(.6)}100%{opacity:0;transform:translate(-50%,-120px) scale(1.8)}}
+.seal{position:relative;width:min(420px,90vw);height:min(470px,80vh);display:flex;align-items:flex-end;justify-content:center}
+.sealGolem{position:absolute;left:15%;right:15%;bottom:60px;animation:gshrink 4s ease-in-out forwards}
+.sealGolem svg{max-height:none!important}
+@keyframes gshrink{0%,30%{transform:none;filter:none}60%{transform:scale(.8);filter:hue-rotate(160deg) brightness(.9)}100%{transform:scale(.62) translateY(40px);filter:hue-rotate(170deg) saturate(.4) brightness(.8)}}
+.jar{position:absolute;left:8%;width:84%;bottom:40px;animation:jdrop 1.6s cubic-bezier(.5,0,.6,1.4) .5s both}
+@keyframes jdrop{from{transform:translateY(-120vh) rotate(180deg)}to{transform:none}}
+.sealSpark{position:absolute;font-size:34px;opacity:0;animation:spark 1.4s 2.2s ease-out both;left:20%;bottom:220px}
+.sealSpark.s2{left:72%;bottom:280px;animation-delay:2.5s}.sealSpark.s3{left:46%;bottom:360px;animation-delay:2.8s}
+@keyframes spark{0%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:scale(.8) translateY(-30px)}}
+.sealTxt{position:absolute;top:0;left:0;right:0;text-align:center;font-size:32px;color:#fde68a;opacity:0;animation:stxt .8s 2.6s forwards}
+@keyframes stxt{to{opacity:1}}
+@media (prefers-reduced-motion: reduce){.sealGolem,.jar,.sealSpark,.sealTxt,.golemBox.hit,#cannonBall.fly{animation-duration:.01s!important;animation-delay:0s!important}}
 /* ---- 한 화면에 들어오도록 (크롬북 1366×768 기준) ---- */
 .wrap{padding-top:10px;padding-bottom:10px}
 .card{padding:12px}.card+.card{margin-top:10px}
@@ -322,7 +369,7 @@ const HINTS = {
   garden:'펌프질할 때마다 "벽 충돌 횟수"가 어떻게 변하는지 봐! 기체의 압력은 입자가 벽에 부딪혀서 생겨.',
   library:'마법사가 피스톤을 두 곳 이상 움직여 보고, 성직자가 그때마다 압력계를 읽어 줘.',
   info:'압력 × 부피 = 일정!  1 × 60 = 3 × □',
-  hall:'압력 × 부피 = 60 이 되도록 빈칸을 채워!  예) 2 × □ = 60'
+  hall:'입구가 막혀 있으니 입자 수는 그대로, 온도도 그대로! 공간만 좁아지면 무엇이 바뀔까?'
 };
 
 /* 자리에 없던 멤버에게 보내는 설명 (3가지 버전) + 확인 OX */
@@ -384,7 +431,17 @@ const TROLL = [
 
 const AWLS = [{name:'보통 송곳',tip:11},{name:'뾰족한 송곳',tip:1},{name:'뭉툭한 송곳',tip:22}];
 const PLATES = [{label:'½배',k:0.5},{label:'2배',k:2},{label:'4배',k:4}];
-const CELLS = {hero:2,mage:3,priest:4,healer:6};   // 강당 표: 압력(기압) → 정답 부피 60/압력
+/* 강당 보스: 입구를 막은 주사기의 피스톤을 누를 때 (온도 일정) */
+const BOSSQ = {
+  hero:   {k:'압력',            q:'주사기 속 기체의 압력은?',          o:['커진다', '일정하다', '작아진다'],   a:0, deed:'🗿 "압력은 커진다!"로 골렘 갑옷을 깼다',     no:'부피가 줄면 입자가 벽에 더 자주 부딪혀. 그럼 압력은?'},
+  mage:   {k:'부피',            q:'주사기 속 기체의 부피는?',          o:['커진다', '일정하다', '작아진다'],   a:2, deed:'🗿 "부피는 작아진다!"로 골렘 갑옷을 깼다',   no:'피스톤을 눌러서 기체가 차지하는 공간이 어떻게 됐지?'},
+  priest: {k:'충돌 횟수',       q:'기체 입자가 벽에 부딪히는 횟수는?', o:['증가한다', '일정하다', '감소한다'], a:0, deed:'🗿 "충돌 횟수는 증가한다!"로 갑옷을 깼다',   no:'좁아진 공간에서 입자가 벽까지 가는 거리가 짧아져!'},
+  healer: {k:'입자의 빠르기',   q:'기체 입자의 빠르기는?',             o:['빨라진다', '일정하다', '느려진다'], a:1, deed:'🗿 "입자의 빠르기는 일정하다!"로 갑옷을 깼다', no:'입자의 빠르기는 온도에 따라 달라져. 지금 온도는?'},
+  warrior:{k:'입자의 개수',     q:'주사기 속 기체 입자의 개수는?',     o:['많아진다', '일정하다', '감소한다'], a:1, deed:'🗿 "입자 개수는 일정하다!"로 갑옷을 깼다',   no:'입구를 막았으니 입자가 들어오거나 나갈 수 있을까?'}
+};
+const BOSS_HP = 24;   // 대포 24발이면 골렘이 쓰러짐
+const bossQs = () => [...BASE, ...(members().warrior ? ['warrior'] : [])];
+const bossOwner = q => q === 'warrior' ? 'warrior' : actors('hall')[q];
 
 /* ===================== DB (Firebase / 연습 모드) ===================== */
 const INC = n => ({__inc:n});
@@ -741,19 +798,36 @@ const ACT = {
     else MUSIC.sfx('wrong'), upd({'st/info/msg':'부피를 늘리면 압력은 작아져! 압력을 크게 하려면 부피를 줄여야 해.'});
   },
   /* 강당 */
-  cell(d){
-    const p = +d.p; const inp = document.getElementById('cell' + p);
-    const val = parseFloat(inp ? inp.value : '');
-    if (isNaN(val)) return toast('숫자를 써 줘!');
-    if (Math.abs(val - 60 / p) < 0.01) {
-      upd({[`st/hall/cells/p${p}`]:true, 'st/hall/msg':null}); MUSIC.sfx('correct');
-      log(`⚡ ${p}기압 칸 정답! 골렘이 휘청인다`);
+  bossAns(d){
+    const q = d.q, Q = BOSSQ[q];
+    if (st('hall').ans && st('hall').ans[q]) return;
+    if (+d.i === Q.a) {
+      upd({[`st/hall/ans/${q}`]:true, 'st/hall/msg':null}); MUSIC.sfx('correct');
+      log(`⚡ ${J(WHO(me.role), '이', '가')} "${Q.k} ${Q.o[Q.a]}"로 골렘 갑옷을 깼다!`);
     } else {
-      upd({'st/hall/msg':`${p}기압 칸이 틀렸어! 골렘의 반격! (압력 × 부피 = 60)`});
+      upd({'st/hall/msg':`${Q.k}: 골렘이 반격했다! 💡 ${Q.no}`}); MUSIC.sfx('wrong');
       damage(me.role, '골렘의 주먹');
-      if (inp) inp.value = '';
     }
   },
+  skipBoss(){
+    if (!DEMO_ONLY) return;
+    const o = {'st/hall':null, finishedAt:null};
+    ['science', 'cafeteria', 'garden', 'library', 'info'].forEach((k, i) => { o[`st/${k}/solved`] = true; o[`st/${k}/at`] = now() - (6 - i) * 60000; o[`st/${k}/duty`] = actors(k); });
+    for (const r of joined()) { o[`members/${r}/loc`] = 'hall'; o[`members/${r}/hp`] = 3; o[`members/${r}/stunUntil`] = 0; }
+    o.notices = null; ui.troll = null; ui.sealDone = false; ui.partyDone = false; ui.sealT = null; ui.partyT = null; hallSolving = false; sfxPrev = null;
+    upd(o).then(() => toast('⏩ 강당 보스전으로 왔어요! 역할을 바꿔 가며 문제를 풀어 보세요'));
+  },
+  partyEnd(){ ui.partyDone = true; clearTimeout(ui.partyT); render(); },
+  fire(){
+    const s = st('hall');
+    if (!bossQs().every(q => s.ans && s.ans[q])) return toast('아직 갑옷이 남아 있어! 친구 문제를 도와줘');
+    if ((s.dmg || 0) >= BOSS_HP || now() < (ui.fireCool || 0)) return;
+    ui.fireCool = now() + 220; ui.shot = now(); ui.myShot = true; MUSIC.sfx('shoot');
+    upd({'st/hall/dmg':INC(1), [`st/hall/fire/${me.role}`]:INC(1)});
+    const g = $('#golemBox'); if (g) { g.classList.remove('hit'); void g.offsetWidth; g.classList.add('hit'); }
+    const c = $('#cannonBall'); if (c) { c.classList.remove('fly'); void c.offsetWidth; c.classList.add('fly'); }
+  },
+
   /* 선생님 */
   async teacher(){
     try {
@@ -811,13 +885,12 @@ const ACT = {
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
   const act = b.dataset.act;
-  const free = ['tAddT','tDelT','resume','forget','tLockToggle','trialHidden','tFree','tClose','exitTrial','pickNum','toCards','toGroup','dice','music','toEntry','help','helpClose','quickDemo','switchRole','demoReset','potion','leave','trollClose','pickRole','enter','teacher','tBack','tResetGroup','tResetClass'];
+  const free = ['skipBoss','partyEnd','fire','tAddT','tDelT','resume','forget','tLockToggle','trialHidden','tFree','tClose','exitTrial','pickNum','toCards','toGroup','dice','music','toEntry','help','helpClose','quickDemo','switchRole','demoReset','potion','leave','trollClose','pickRole','enter','teacher','tBack','tResetGroup','tResetClass'];
   if (me && room && isStunned(me.role) && !free.includes(act)) return toast('😵 기절 중이야! 물약을 쓰거나 힐러를 기다려');
   ACT[act] && ACT[act](b.dataset, b);
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.target.id === 'tEmail') ACT.tAddT();
-  if (e.key === 'Enter' && e.target.matches('input[data-cell]')) ACT.cell({p:e.target.dataset.cell});
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'selCls' || e.target.id === 'selGrp') {
@@ -909,6 +982,7 @@ const CHARS = (() => {
   };
   function eye(x, y, flip, P, id){
     const tf = `translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`;
+    if (P.eyes === 'happy') return `<g transform="${tf}"><path d="M-9.5 3 Q0 -7 9.5 3" stroke="#2a1a1a" stroke-width="3.4" fill="none" stroke-linecap="round"/></g>`;
     if (P.eyes === 'closed') return `<g transform="${tf}"><path d="M-9.5 0 Q0 6 9.5 0" stroke="#2a1a1a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-9.5 0 l-2.5 -2" stroke="#2a1a1a" stroke-width="2" stroke-linecap="round"/></g>`;
     return `<g transform="${tf}">
       <ellipse rx="9.6" ry="11.8" fill="#fff"/>
@@ -922,13 +996,16 @@ const CHARS = (() => {
     </g>`;
   }
   const MOUTH = {
+    joy:'<path d="M91 116 Q100 131 109 116 Z" fill="#9b2c2c"/><path d="M95 122 Q100 125.5 105 122 Q100 128 95 122Z" fill="#f87171"/>',
     smirk:'<path d="M93 120 Q100 123 108 117" stroke="#6e3326" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
     sly:'<path d="M93 118 Q99 123 107 120" stroke="#6e3326" stroke-width="2.3" fill="none" stroke-linecap="round"/>',
     flat:'<path d="M94.5 121 Q100 119.8 105.5 121" stroke="#6e3326" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
     soft:'<path d="M94 119 Q100 124 106 119" stroke="#6e3326" stroke-width="2.2" fill="none" stroke-linecap="round"/>',
     grit:'<path d="M93 119.5 L107 119.5" stroke="#6e3326" stroke-width="2.6" stroke-linecap="round"/><path d="M95 119.5 Q100 123 105 119.5" stroke="#6e3326" stroke-width="1.6" fill="none"/>'
   };
+  let JOY = false;
   function head(P, id){
+    if (JOY) P = Object.assign({}, P, {eyes:'happy', mouth:'joy', blush:true, face:P.face && P.face.includes('c0604a') ? P.face : ''});
     const k = SK[P.skin];
     return `<ellipse cx="57.5" cy="103" rx="5.5" ry="8.5" fill="${k.d}"/><ellipse cx="142.5" cy="103" rx="5.5" ry="8.5" fill="${k.d}"/>
       <path d="M57 92 Q57 52 100 52 Q143 52 143 92 Q143 122 122 134 Q100 144 78 134 Q57 122 57 92Z" fill="url(#${id}-skin)"/>
@@ -1096,7 +1173,7 @@ const CHARS = (() => {
       ${hand(94, 170, p)}`; }
   };
   return {
-    svg(role, cls, crop){ const id = 'ch-' + role; return `<svg class="${cls || ''}" viewBox="${crop ? '50 36 100 100' : '0 0 200 244'}" role="img" aria-label="${role}">${defs(P[role], id)}${DRAW[role](id)}</svg>`; },
+    svg(role, cls, crop, joy){ const id = 'ch-' + role; JOY = !!joy; const out = `<svg class="${cls || ''}" viewBox="${crop ? '50 36 100 100' : '0 0 200 244'}" role="img" aria-label="${role}">${defs(P[role], id)}${DRAW[role](id)}</svg>`; JOY = false; return out; },
     color(role){ return P[role].glow; }
   };
 })();
@@ -1153,7 +1230,16 @@ const MUSIC = (() => {
       bar('Dm',38), bar('Bb',34), bar('F',41,[[4,81,4]]), bar('C',36),
       bar('Dm',38), bar('Gm',43), bar('Bb',34,[[0,77,4],[4,76,4]]), bar('A',33)]},
     /* 강당 보스전: 긴장감 */
-    boss:{bpm:96, padLvl:.05, bassLvl:.11, arpLvl:.08, leadLvl:.13, saw:true, arp:[0,1,2,1,0,1,2,1], drums:[0,3,4], bassSteps:[0,2,4,6], bars:[
+    joy:{bpm:124, padLvl:.035, bassLvl:.08, arpLvl:.06, leadLvl:.1, arp:[0,1,2,3,2,1,2,3], ticks:[1,3,5,7], drums:[0,4], drumLvl:.55, bassSteps:[0,4], bars:[
+      bar('C',36,[[0,76,1],[1,79,1],[2,84,2],[4,83,1],[5,84,1],[6,79,2]]),
+      bar('G',43,[[0,79,2],[2,81,1],[3,79,1],[4,74,4]]),
+      bar('Am',45,[[0,76,1],[1,77,1],[2,79,2],[4,84,2],[6,81,2]]),
+      bar('F',41,[[0,81,2],[2,79,2],[4,77,2],[6,76,2]]),
+      bar('C',36,[[0,76,1],[1,79,1],[2,84,2],[4,86,2],[6,88,2]]),
+      bar('F',41,[[0,84,2],[2,81,2],[4,77,4]]),
+      bar('G',43,[[0,79,2],[2,83,2],[4,86,2],[6,83,2]]),
+      bar('C',36,[[0,84,8]])]},
+    boss:{bpm:96, padLvl:.018, bassLvl:.045, arpLvl:.035, leadLvl:.075, saw:true, arp:[0,1,2,1,0,1,2,1], taiko:[0,4], taikoLvl:1.1, drums:[2,3,6,7], drumLvl:.35, bassSteps:[0,2,4,6], bars:[
       bar('Dm',38), bar('Dm',38,[[4,74,2],[6,77,2]]), bar('Bb',34,[[0,76,4]]), bar('A',33,[[0,73,4]]),
       bar('Dm',38), bar('Gm',43,[[4,79,2],[6,77,2]]), bar('Bb',34,[[0,76,4],[4,74,4]]), bar('A',33,[[0,73,8]])]}
   };
@@ -1199,6 +1285,23 @@ const MUSIC = (() => {
     const g = env(t, Math.min(.6, dur * .4), dur * .2, Math.max(.04, dur * .4), lvl);
     src.connect(f); f.connect(g); if (dest) g.connect(dest); else out(g, .3); src.start(t); src.stop(t + dur * 1.2 + .1);
   }
+  function woodStep(tt, lvl, pitch){
+    noiseHit(tt, .05, .7 * lvl, 'bandpass', 950 * pitch, 0, sfxG);
+    for (const [type, f0, f1, dec, a] of [['sine', 340 * pitch, 190 * pitch, .1, .8], ['triangle', 175 * pitch, 100 * pitch, .13, .5]]) {
+      const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, tt); o.frequency.exponentialRampToValueAtTime(f1, tt + .08);
+      const g = env(tt, .002, 0, dec, a * lvl); o.connect(g); g.connect(sfxG); const w = ac.createGain(); w.gain.value = 1.1; g.connect(w); w.connect(rev);
+      o.start(tt); o.stop(tt + dec + .05);
+    }
+  }
+  function taiko(t, lvl){
+    const parts = [['sine', 190, 96, 1.2, 1], ['triangle', 98, 62, 1.0, .8], ['sine', 380, 200, .22, .5]];
+    for (const [type, f0, f1, dec, a] of parts) {
+      const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + .35);
+      const g = env(t, .004, 0, dec, lvl * a); o.connect(g); g.connect(master); const w = ac.createGain(); w.gain.value = .9; g.connect(w); w.connect(rev);
+      o.start(t); o.stop(t + dec + .1);
+    }
+    noiseHit(t, .09, lvl * .6, 'lowpass', 900);
+  }
   function drum(t, lvl){
     const o = ac.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + .4); const g = env(t, .005, 0, .55, lvl); o.connect(g); out(g, .35); o.start(t); o.stop(t + .7);
     const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.setValueAtTime(240, t); o2.frequency.exponentialRampToValueAtTime(95, t + .25); const g2 = env(t, .003, 0, .32, lvl * .9); o2.connect(g2); out(g2, .4); o2.start(t); o2.stop(t + .45);
@@ -1211,7 +1314,8 @@ const MUSIC = (() => {
     const a = S.arp[st]; if (a != null) { const am = B.pad[a % 3] - 12 + (a >= 3 ? 12 : 0); if (S.bell) bell(am + 12, t, S.arpLvl); else pluck(am, t, S.arpLvl, S.saw); }
     if (S.ticks && S.ticks.includes(st)) noiseHit(t, .06, .025, 'highpass', 7000);
     if (S.wind && st === 0) noiseHit(t, 8 * e + 1.5, .05, 'bandpass', 380 + Math.random() * 300, 600 + Math.random() * 500);
-    if (S.drums && S.drums.includes(st)) drum(t, st === 0 ? .4 : .3);
+    if (S.taiko && S.taiko.includes(st)) taiko(t, S.taikoLvl || .5);
+    else if (S.drums && S.drums.includes(st)) drum(t, (st === 0 || st === 4 ? .62 : .4) * (S.drumLvl || 1));
     if (!(S.melEveryOther && pass % 2 === 1)) for (const x of B.mel) if (x[0] === st) lead(x[1], t, x[2] * e, S.leadLvl);
   }
   function sched(){
@@ -1241,6 +1345,32 @@ const MUSIC = (() => {
     wrong(t){ tone(52, t, .14, .11, 'square', 900); tone(47, t + .15, .25, .11, 'square', 900); },
     horn(t){ tone(67, t, .22, .13, 'sawtooth', 1500); tone(72, t + .22, .45, .13, 'sawtooth', 1500); },
     pump(t){ noiseHit(t, .35, .12, 'bandpass', 500, 2200, sfxG); },
+    shoot(t){
+      const o = ac.createOscillator(); o.type = 'square'; o.frequency.setValueAtTime(1400, t); o.frequency.exponentialRampToValueAtTime(260, t + .26);
+      const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 3000; const g = env(t, .004, .05, .2, .12); o.connect(f); f.connect(g); g.connect(sfxG); o.start(t); o.stop(t + .4);
+      noiseHit(t, .05, .2, 'highpass', 2500, 0, sfxG);
+      SFX.boom(t + .27);
+    },
+    boom(t){ const o = tone(36, t, .35, .4, 'sine'); o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(40, t + .35); noiseHit(t, .3, .22, 'lowpass', 1400, 200, sfxG); },
+    fanfare(t){ [[67, 0], [67, .14], [67, .28], [72, .44], [76, .74], [79, 1.04]].forEach(([m, d]) => { tone(m, t + d, d > 1 ? .9 : .13, .15, 'sawtooth', 2600); tone(m - 12, t + d, d > 1 ? .9 : .13, .08, 'square', 1500); }); [72, 76, 79, 84].forEach(m => tone(m, t + 1.3, 1.6, .08, 'sawtooth', 2400)); noiseHit(t + 1.3, 1.2, .07, 'highpass', 6000, 0, sfxG); },
+    gym(t){
+      master.gain.cancelScheduledValues(t); master.gain.setTargetAtTime(vol * .35, t, .08); master.gain.setTargetAtTime(vol, t + 4.1, .4);
+      const n = Math.max(2, Math.min(5, (window.__runners || 4)));
+      for (let k = 0; k < n; k++) for (let i = 0; i < 30; i++) {
+        const tt = t + i * .133 + k * .014;
+        woodStep(tt, (k ? .32 : .85) * (i % 4 === 0 ? 1.2 : 1), (i % 2 ? 1.12 : 1) * (1 - k * .05));
+      }
+    },
+    jump(t){
+      noiseHit(t, .45, .13, 'bandpass', 380, 2600, sfxG);
+      const o = ac.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(150, t + .5); o.frequency.exponentialRampToValueAtTime(38, t + .9);
+      const g = env(t + .5, .004, 0, .5, .5); o.connect(g); g.connect(sfxG); const w = ac.createGain(); w.gain.value = .9; g.connect(w); w.connect(rev); o.start(t + .5); o.stop(t + 1.1);
+      noiseHit(t + .5, .25, .2, 'lowpass', 1200, 200, sfxG);
+      [72, 76, 79, 84].forEach(m => tone(m, t + .55, 1.3, .1, 'sawtooth', 2600));
+      [96, 100, 103, 108].forEach((m, i) => tone(m, t + .6 + i * .07, .2, .06, 'sine'));
+    },
+    steps(t){ for (let i = 0; i < 12; i++) woodStep(t + i * .12, .6, i % 2 ? 1.1 : 1); },
+    seal(t){ [60, 67, 72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .12, .5, .1, 'sine')); tone(48, t, 2.2, .14, 'triangle', 600); noiseHit(t + .7, .5, .1, 'bandpass', 3000, 6000, sfxG); },
     tick(t){ tone(88, t, .04, .05, 'square', 3000); }
   };
   return {
@@ -1269,7 +1399,7 @@ let sfxPrev = null, renderedOnce = false;
 function sfxDiff(){
   const m = members()[me.role]; if (!m || !room.startedAt) { sfxPrev = null; return; }
   const cur = {key:rp() + me.role, solved:Object.keys(PLACES).filter(k => solved(k)), hp:m.hp || 3, stun:isStunnedM(m),
-    pend:Object.values((room.notices || {})[me.role] || {}).filter(n => !n.done).length};
+    pend:Object.values((room.notices || {})[me.role] || {}).filter(n => !n.done).length, dmg:st('hall').dmg || 0};
   const p = sfxPrev; sfxPrev = cur;
   if (!p || p.key !== cur.key) return;
   if (cur.solved.length > p.solved.length) MUSIC.sfx(cur.solved.includes('hall') && !p.solved.includes('hall') ? 'victory' : 'unseal');
@@ -1278,10 +1408,11 @@ function sfxDiff(){
   else if (cur.hp < p.hp) MUSIC.sfx('hit');
   else if (cur.hp > p.hp) MUSIC.sfx('heal');
   if (cur.pend > p.pend) MUSIC.sfx('horn');
+  if (cur.dmg > p.dmg && now() - (ui.shot || 0) > 300) { ui.shot = now(); ui.myShot = false; MUSIC.sfx('boom'); }
 }
 function moodNow(){
   if (!me || !room || !room.startedAt) return 'story';
-  const sg = stage(); if (sg === 5) return 'story';
+  const sg = stage(); if (sg === 5) return (ui.sealDone && !ui.partyDone) ? 'joy' : 'story';
   if (sg === 4) return myLoc() === 'hall' ? 'boss' : 'calm';
   return ['', 'bright', 'outdoor', 'mystic'][sg];
 }
@@ -1318,7 +1449,7 @@ function demoBar(){
   return `<div class="card" style="border-color:#a16207;margin-bottom:12px"><div class="row">
     <b>🎭 혼자 해 보기 — 지금 조종할 역할:</b>
     ${ROLE_ORDER.map(r => `<button class="btn sm ${me.role === r ? 'gold' : ''}" data-act="switchRole" data-r="${r}">${ROLES[r].icon} ${ROLES[r].name}</button>`).join('')}
-    <button class="btn sm red" data-act="demoReset" style="margin-left:auto">🔄 처음부터</button><button class="btn sm" data-act="exitTrial">체험 끝내기</button></div>
+    <button class="btn sm gold" data-act="skipBoss" style="margin-left:auto">⏩ 보스전 바로 가기</button><button class="btn sm red" data-act="demoReset">🔄 처음부터</button><button class="btn sm" data-act="exitTrial">체험 끝내기</button></div>
     <div class="muted" style="font-size:14px;margin-top:4px">역할을 바꿔 가며 각 친구의 화면을 직접 조종해 보세요. (전사는 5명 모둠용이라 안 눌러도 돼요)</div></div>`;
 }
 
@@ -1482,11 +1613,10 @@ function renderGame(){
   paint($('#station'), stationHTML());
   const L = Object.entries(room.log || {}).sort((a, b) => a[0] < b[0] ? 1 : -1).slice(0, 4);
   paint($('#log'), L.map(([k, v]) => `<div>${esc(v.m)}</div>`).join('') || '<div>아직 기록이 없어요</div>');
-  // 강당: 마지막 칸이 채워지면 한 명만 마무리
-  const c = st('hall').cells || {};
-  if (stage() === 4 && Object.keys(CELLS).every(r => c['p' + CELLS[r]]) && !hallSolving && joined()[0] === me.role) {
+  // 강당: 골렘 체력이 0이 되면 봉인 (여러 명이 동시에 해도 한 번만 저장됨)
+  if (stage() === 4 && (st('hall').dmg || 0) >= BOSS_HP && !hallSolving) {
     if (DB.mode === 'firebase' && now() - room.startedAt < 185000) { if (!ui.hallWait) { ui.hallWait = true; toast('🗿 골렘이 아직 버틴다! 모험 3분이 지나면 쓰러져요'); } }
-    else { hallSolving = true; solve('hall', {'items/gem':INC(3)}, '🏆 강당: 압력 골렘을 쓰러뜨렸다! 💎 다이아 3개').then(ok => { if (!ok) hallSolving = false; }); }
+    else { hallSolving = true; solve('hall', {'items/gem':INC(3)}, '🔒 강당: 압력 골렘을 봉인의 유리병에 가뒀다! 💎 다이아 3개').then(ok => { if (!ok) hallSolving = false; }); }
   }
   tick(true);
 }
@@ -1642,22 +1772,57 @@ function sInfo(){
   if (!du.length) c += '<p class="muted">용사와 힐러가 단서를 합쳐야 해.</p>';
   return `<div class="box">서버를 식히는 공기 탱크의 압력이 부족하다! 온도는 그대로, 공기를 눌러서 압력을 올려야 해.</div>${tankSVG()}${c}`;
 }
+function golemSVG(dmg, armor, total){
+  const hp = Math.max(0, 1 - dmg / BOSS_HP), crack = dmg / BOSS_HP;
+  const plates = [[70, 92], [130, 92], [100, 128], [64, 150], [136, 150]].slice(0, total);
+  return `<svg viewBox="0 0 200 200" width="100%" style="max-height:19vh;display:block;margin:auto;overflow:visible">
+    <defs><radialGradient id="gEye"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#fb923c"/><stop offset="1" stop-color="#b91c1c" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gStone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b93a7"/><stop offset="1" stop-color="#4b5266"/></linearGradient></defs>
+    <ellipse cx="100" cy="192" rx="70" ry="7" fill="#000" opacity=".35"/>
+    <rect x="44" y="96" width="24" height="70" rx="11" fill="url(#gStone)" transform="rotate(12 56 100)"/><rect x="132" y="96" width="24" height="70" rx="11" fill="url(#gStone)" transform="rotate(-12 144 100)"/>
+    <circle cx="44" cy="170" r="15" fill="#5b6378"/><circle cx="156" cy="170" r="15" fill="#5b6378"/>
+    <rect x="72" y="160" width="22" height="30" rx="7" fill="#4b5266"/><rect x="106" y="160" width="22" height="30" rx="7" fill="#4b5266"/>
+    <path d="M58 86 Q100 66 142 86 L150 162 Q100 178 50 162 Z" fill="url(#gStone)" stroke="#2f3444" stroke-width="3"/>
+    <rect x="70" y="26" width="60" height="54" rx="16" fill="url(#gStone)" stroke="#2f3444" stroke-width="3"/>
+    <circle cx="88" cy="52" r="${7 + 3 * hp}" fill="url(#gEye)"/><circle cx="112" cy="52" r="${7 + 3 * hp}" fill="url(#gEye)"/>
+    <path d="M86 68 Q100 ${62 + 6 * crack} 114 68" stroke="#1f2330" stroke-width="3" fill="none"/>
+    <circle cx="100" cy="120" r="12" fill="#f97316" opacity="${.35 + .5 * hp}"/><text x="100" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#fff7ed">P</text>
+    ${crack > .2 ? '<path d="M70 96 l10 12 -6 10 10 12" stroke="#1f2330" stroke-width="2.4" fill="none"/>' : ''}
+    ${crack > .45 ? '<path d="M128 100 l-8 14 8 8 -6 14 M80 34 l8 10 -4 8" stroke="#1f2330" stroke-width="2.4" fill="none"/>' : ''}
+    ${crack > .7 ? '<path d="M96 140 l6 10 -8 8 6 10 M114 30 l-6 12 6 6" stroke="#1f2330" stroke-width="2.6" fill="none"/>' : ''}
+    ${plates.map(([x, y], i) => armor[i] ? '' : `<g><rect x="${x - 15}" y="${y - 11}" width="30" height="22" rx="5" fill="#7c3aed" stroke="#c4b5fd" stroke-width="2"/><path d="M${x - 6} ${y} h12 M${x} ${y - 6} v12" stroke="#ede9fe" stroke-width="2"/></g>`).join('')}
+  </svg>`;
+}
+function syringePair(){
+  const sy = (x, px) => `<g transform="translate(${x} 0)"><rect x="0" y="18" width="70" height="24" rx="3" fill="rgba(147,197,253,.18)" stroke="#94a3b8" stroke-width="2"/>
+    <rect x="${px}" y="20" width="5" height="20" fill="#a78bfa"/><rect x="${px + 5}" y="27" width="${76 - px}" height="6" fill="#a78bfa"/><rect x="-8" y="24" width="8" height="12" rx="2" fill="#ef4444"/>
+    ${[.06, .24, .42, .6, .78, .96].map((f, k) => `<circle cx="${(4 + f * (px - 9)).toFixed(1)}" cy="${[25, 34, 27, 35, 26, 32][k]}" r="2.6" fill="#93c5fd"/>`).join('')}</g>`;
+  return `<svg viewBox="0 0 300 60" width="100%" style="max-width:380px;max-height:9vh;display:block;margin:2px auto">
+    ${sy(10, 62)}<path d="M126 34 h34" stroke="#f472b6" stroke-width="3" marker-end="url(#ar)"/><defs><marker id="ar" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12z" fill="#f472b6"/></marker></defs>
+    <text x="146" y="22" text-anchor="middle" font-size="11" fill="#f9a8d4">피스톤을 누름</text>${sy(190, 34)}</svg>`;
+}
 function sHall(){
-  const s = st('hall'), cells = s.cells || {}, du = myDuties('hall');
-  const done = Object.keys(CELLS).filter(r => cells['p' + CELLS[r]]).length;
-  const owner = {}; for (const r in CELLS) owner[CELLS[r]] = actors('hall')[r];
-  const cell = p => {
-    if (cells['p' + p]) return `<td style="color:#4ade80;font-weight:900">${60 / p}</td>`;
-    const r = Object.keys(CELLS).find(x => CELLS[x] === p);
-    if (du.includes(r)) return `<td><input id="cell${p}" data-cell="${p}" inputmode="decimal" placeholder="?"><br><button class="btn sm primary myturn" data-act="cell" data-p="${p}" style="margin-top:4px">확인</button></td>`;
-    return `<td>? <span style="font-size:15px">${ROLES[owner[p]] ? ROLES[owner[p]].icon : ''}</span></td>`;
-  };
-  return `<div class="golem">🗿</div><div class="hpbar"><i style="width:${(4 - done) * 25}%"></i></div>
-    <p style="text-align:center" class="muted">골렘 체력 ${4 - done} / 4</p>
-    <div class="box">골렘의 갑옷에 압력·부피 표가 새겨져 있다. <b>각자 자기 칸</b>을 채우면 골렘이 쓰러진다! (온도는 일정)</div>
-    <table class="bt"><tr><th>압력(기압)</th><td>1</td><td>2</td><td>3</td><td>4</td><td>6</td></tr>
-    <tr><th>부피(mL)</th><td>60</td>${[2, 3, 4, 6].map(cell).join('')}</tr></table>
-    ${me.role === 'warrior' ? '<p class="muted" style="text-align:center">🛡️ 전사는 방패로 골렘의 주먹을 막아 줘!</p>' : ''}`;
+  const s = st('hall'), ans = s.ans || {}, du = myDuties('hall'), qs = bossQs();
+  const done = qs.filter(q => ans[q]).length, all = done === qs.length, dmg = Math.min(BOSS_HP, s.dmg || 0);
+  const mine = [...du, ...(me.role === 'warrior' && !du.includes('warrior') && members().warrior ? ['warrior'] : [])].filter(q => qs.includes(q) && !ans[q]);
+  const chip = q => `<span class="pill" style="${ans[q] ? 'background:#14532d;border-color:#15803d' : ''}">${ans[q] ? '✅' : '⏳'} ${ROLES[bossOwner(q)] ? ROLES[bossOwner(q)].icon : ''} ${BOSSQ[q].k}</span>`;
+  let body;
+  if (!all) {
+    body = `<div style="text-align:center;font-size:15px;margin:2px 0">🔒 입구를 막은 주사기의 피스톤을 눌렀다! (<b>온도 일정</b>) 각자 자기 문제로 갑옷을 깨자!</div>${syringePair()}
+      ${mine.map(q => `<div class="box" style="margin:6px 0"><b>${ROLES[q].icon} ${BOSSQ[q].q}</b>
+        <div class="row" style="margin-top:6px;justify-content:center">${BOSSQ[q].o.map((t, i) => `<button class="btn myturn" data-act="bossAns" data-q="${q}" data-i="${i}">${t}</button>`).join('')}</div></div>`).join('')
+        || '<p class="muted" style="text-align:center">✅ 내 문제는 풀었어! 친구가 고민하면 옆에서 도와줘.</p>'}
+      <div class="row" style="justify-content:center;gap:6px">${qs.map(chip).join('')}</div>`;
+  } else {
+    body = `<div class="ok" style="text-align:center;margin:4px 0">⚡ 갑옷이 모두 깨졌다! <b>모두 대포를 쏴서</b> 골렘을 쓰러뜨려!</div>
+      <div style="text-align:center"><button class="btn gold big myturn" data-act="fire" style="font-size:26px;padding:14px 34px">💥 대포 발사!</button>
+      <div class="muted" style="margin-top:4px;font-size:14px">내가 쏜 대포: ${((s.fire || {})[me.role]) || 0}발</div></div>`;
+  }
+  const hit = now() - (ui.shot || 0) < 340;
+  return `<div id="golemBox" class="golemBox ${hit ? 'hit' : ''}"><div id="cannonBall" class="${hit && ui.myShot ? 'fly' : ''}">💣</div>${golemSVG(dmg, qs.map(q => ans[q]), qs.length)}</div>
+    <div class="hpbar"><i style="width:${(1 - dmg / BOSS_HP) * 100}%"></i></div>
+    <p style="text-align:center;margin:2px 0;font-size:14px" class="muted">골렘 체력 ${BOSS_HP - dmg} / ${BOSS_HP} · 갑옷 ${qs.length - done}개 남음</p>${body}
+    ${me.role === 'warrior' ? '<p class="muted" style="text-align:center;font-size:13px">🛡️ 방패로 골렘의 주먹을 한 번 막을 수 있어!</p>' : ''}`;
 }
 const DEEDS = {
   science:{hero:'🔬 과학실에서 마법 비닐을 꽉 붙잡았다', mage:'🔬 가장 뾰족한 송곳을 골라 비닐을 뚫었다'},
@@ -1665,7 +1830,7 @@ const DEEDS = {
   garden:{hero:'⚽ 단단해진 공을 차서 말벌집을 떨어뜨렸다', mage:'⛽ 초담뜰에서 힘껏 펌프질을 했다', priest:'📜 공이 단단해진 이유를 밝혀냈다', healer:'⛽ 초담뜰에서 힘껏 펌프질을 했다'},
   library:{mage:'📚 마법 주사기의 피스톤을 움직였다', priest:'🧭 압력계를 읽고 보일 법칙을 찾아냈다'},
   info:{hero:'💻 공기 탱크를 20 mL로 눌러 서버를 살렸다', healer:'🎯 목표 압력 3기압을 친구에게 알려 줬다'},
-  hall:{hero:'🗿 골렘 갑옷의 2기압 칸을 채웠다', mage:'🗿 골렘 갑옷의 3기압 칸을 채웠다', priest:'🗿 골렘 갑옷의 4기압 칸을 채웠다', healer:'🗿 골렘 갑옷의 6기압 칸을 채웠다'}
+  hall:{hero:BOSSQ.hero.deed, mage:BOSSQ.mage.deed, priest:BOSSQ.priest.deed, healer:BOSSQ.healer.deed}
 };
 function deedsOf(r){
   const out = [];
@@ -1675,6 +1840,8 @@ function deedsOf(r){
   }
   const S = room.stats || {}, n = k => (S[k] && S[k][r]) || 0;
   if (r === 'warrior' && st('science').holdW) out.push('💪 용사와 함께 비닐을 잡아 힘을 2배로 만들었다');
+  if (r === 'warrior' && (st('hall').ans || {}).warrior) out.push(BOSSQ.warrior.deed);
+  const fr = ((st('hall').fire || {})[r]) || 0; if (fr) out.push(`💥 골렘에게 대포를 ${fr}발 쐈다`);
   if (n('shield')) out.push('🛡️ 방패로 동료를 지켜 냈다');
   if (n('heal')) out.push(`💚 동료를 ${n('heal')}번 치유했다`);
   if (n('troll')) out.push(`👹 트롤을 ${n('troll')}번 물리쳤다`);
@@ -1709,7 +1876,30 @@ function busySolving(){
 }
 function renderOverlay(){
   const el = $('#overlay'); let h = '';
-  if (ui.help) {
+  if (room.startedAt && solved('hall') && !ui.sealDone) {
+    if (!ui.sealT) { ui.sealT = setTimeout(() => { ui.sealDone = true; render(); }, 5200); setTimeout(() => MUSIC.sfx('seal'), 900); }
+    h = `<div class="back" style="background:radial-gradient(circle at 50% 60%,#1e1b4b,#05060f 70%)"><div class="seal">
+      <div class="sealGolem">${golemSVG(BOSS_HP, [1,1,1,1,1], 5)}</div>
+      <svg class="jar" viewBox="0 0 220 260"><defs><linearGradient id="jg" x1="0" x2="1"><stop offset="0" stop-color="#bae6fd" stop-opacity=".25"/><stop offset=".5" stop-color="#e0f2fe" stop-opacity=".08"/><stop offset="1" stop-color="#bae6fd" stop-opacity=".3"/></linearGradient></defs>
+        <rect x="80" y="2" width="60" height="22" rx="6" fill="#a16207" stroke="#fde68a" stroke-width="3"/>
+        <path d="M86 24 L86 44 Q20 60 20 130 L20 236 Q20 254 40 254 L180 254 Q200 254 200 236 L200 130 Q200 60 134 44 L134 24 Z" fill="url(#jg)" stroke="#e0f2fe" stroke-width="4"/>
+        <path d="M40 120 Q42 80 76 64" stroke="#fff" stroke-width="5" fill="none" opacity=".6" stroke-linecap="round"/>
+        <text x="110" y="244" text-anchor="middle" font-size="15" font-weight="900" fill="#fde68a">봉 인</text></svg>
+      <div class="sealSpark">✨</div><div class="sealSpark s2">✨</div><div class="sealSpark s3">✨</div>
+      <h2 class="jua sealTxt">🔒 압력 골렘을 봉인했다!</h2></div></div>`;
+  } else if (room.startedAt && solved('hall') && !ui.partyDone) {
+    if (!ui.partyT) { ui.partyT = setTimeout(() => { ui.partyDone = true; render(); }, 12500); MUSIC.sfx('fanfare'); setTimeout(() => MUSIC.sfx('steps'), 500); setTimeout(() => { window.__runners = joined().length; MUSIC.sfx('gym'); }, 2300); setTimeout(() => MUSIC.sfx('jump'), 6300); }
+    const PJ = joined(), n = PJ.length, cols = ['#f87171', '#fbbf24', '#4ade80', '#60a5fa', '#c084fc', '#f472b6'];
+    const conf = Array.from({length:46}, (_, i) => `<i style="left:${(i * 37) % 100}%;background:${cols[i % 6]};animation-delay:${(i % 9) * .22}s;animation-duration:${2.4 + (i % 5) * .5}s"></i>`).join('');
+    h = `<div class="back" style="background:radial-gradient(circle at 50% 55%,#3b1d5e,#0b0820 72%)"><div class="party">
+      <div class="confetti">${conf}</div>
+      <h2 class="jua partyTxt">🎉 우리가 해냈다! 🎉</h2>
+      <div class="jarMini">🫙</div>
+      <div class="ring" style="--n:${n}"><div class="ringLine"></div>
+        ${PJ.map((r, i) => `<div class="dancer" style="--a:${(360 / n) * i}deg"><div class="runner" style="--from:${(360 / n) * i < 180 ? 70 : -70}vw;animation-delay:${i * .15}s"><div class="up"><div class="bob">${CHARS.svg(r, '', false, true)}</div><b>${esc(NAME(r) || RN(r))}</b></div></div></div>`).join('')}
+      </div>
+      <button class="btn primary big partyBtn" data-act="partyEnd">🏆 우리 파티의 기록 보기</button></div></div>`;
+  } else if (ui.help) {
     h = `<div class="back"><div class="modal" style="max-width:1000px">${introHTML(true)}</div></div>`;
   } else if (room.startedAt) {
     const m = members()[me.role];
