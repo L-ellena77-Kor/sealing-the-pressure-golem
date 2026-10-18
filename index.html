@@ -263,7 +263,9 @@ const FIREBASE_CONFIG = {
   appId: "1:288763024187:web:fd02097931745f6b8edd1e"
 };
 const SCHOOL = "우리 학교";    // 게임 이야기에 나오는 학교 이름
-const TEACHER_EMAIL = "hyoseonoh5@gmail.com";  // 선생님 화면에 들어갈 수 있는 Google 계정 (Firebase 규칙에도 같은 주소)
+const TEACHER_EMAIL = "hyoseonoh5@gmail.com";  // 관리 선생님 Google 계정 (Firebase 규칙에도 같은 주소). 다른 선생님은 선생님 화면에서 추가해요
+const emailKey = e => String(e || '').trim().toLowerCase().replace(/\./g, ',');
+let isOwner = false;
 let DEMO_ONLY = false;          // 체험 모드일 때만 true (직접 바꾸지 마세요)
 const CLASS_COUNT = 11;       // 1~11반
 const GROUP_COUNT = 8;        // 1~8모둠
@@ -591,7 +593,10 @@ const ACT = {
     if (seats[role] && seats[role] !== uid) { toast('친구가 이미 고른 카드야. 다른 카드를 골라 줘!'); return renderEntry(); }
     if (!seats[role]) {
       try { await DB.update('', {[`players/${uid}`]:`c${c}/g${g}/${role}`, [`${path}/seats/${role}`]:uid, [`${path}/uids/${uid}`]:role}); }
-      catch(e) { return toast('이 크롬북은 이미 다른 자리에 들어가 있어요. 선생님께 말해 줘!'); }
+      catch(e) {
+        const mine = await DB.get('players/' + uid).catch(() => null);
+        return toast(mine ? '이 크롬북은 이미 다른 자리에 들어가 있어요. 선생님께 말해 줘!' : '⏰ 이 파티는 시작한 지 5분이 지나 빈자리가 닫혔어요. 다른 번호 파티로 들어가 줘!');
+      }
     }
     const r = (await DB.get(path).catch(() => null)) || {};
     const ex = r.members && r.members[entry.role];
@@ -752,8 +757,10 @@ const ACT = {
   /* 선생님 */
   async teacher(){
     try {
-      const email = await DB.google();
-      if ((email || '').toLowerCase() !== TEACHER_EMAIL.toLowerCase()) { await DB.signOut(); return toast('선생님 계정이 아니에요'); }
+      const email = (await DB.google() || '').toLowerCase();
+      isOwner = email === TEACHER_EMAIL.toLowerCase();
+      const ok = isOwner || !!(await DB.get('teachers/' + emailKey(email)).catch(() => null));
+      if (!ok) { await DB.signOut(); return toast('등록된 선생님 계정이 아니에요. 관리 선생님께 이메일 추가를 부탁해 주세요'); }
       if (unsubEntry) { unsubEntry(); unsubEntry = null; }
       showTeacher();
     } catch(e) { toast('로그인을 하지 못했어요' + (e && e.code ? ' (' + e.code + ')' : '')); }
@@ -761,8 +768,14 @@ const ACT = {
   tClose(){ const o = $('#overlay'); o.innerHTML = ''; o.__h = ''; },
   trialHidden(){ startTrial(); },
   exitTrial(){ try { sessionStorage.removeItem('pq_me2'); } catch(e){} location.reload(); },
-  async tBack(){ if (unsubClass) unsubClass(); unsubClass = null; if (unsubLock) unsubLock(); unsubLock = null; screen = ''; await DB.signOut().catch(() => {}); showEntry(); },
+  async tBack(){ if (unsubClass) unsubClass(); unsubClass = null; if (unsubLock) unsubLock(); unsubLock = null; if (unsubT) unsubT(); unsubT = null; isOwner = false; screen = ''; await DB.signOut().catch(() => {}); showEntry(); },
   tResetGroup(d){ if (confirm(`${teacher.cls}반 ${d.g}번 파티 기록을 지울까요?`)) wipe(`c${teacher.cls}/g${d.g}/`, {[`escape/c${teacher.cls}/g${d.g}`]:null}); },
+  tAddT(){
+    const e = (($('#tEmail') || {}).value || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) return toast('이메일 주소를 확인해 주세요');
+    DB.update('teachers', {[emailKey(e)]:true}).then(() => { toast('선생님을 추가했어요'); const i = $('#tEmail'); if (i) i.value = ''; }).catch(() => toast('추가하지 못했어요'));
+  },
+  tDelT(d){ if (confirm(`${d.e} 선생님을 목록에서 뺄까요?`)) DB.update('teachers', {[emailKey(d.e)]:null}).catch(() => toast('빼지 못했어요')); },
   tLockToggle(){ DB.update('locks', {[`c${teacher.cls}`]:!classLocked}).then(() => toast(classLocked ? '🔒 입장을 마감했어요' : '🔓 입장을 다시 열었어요')).catch(() => toast('바꾸지 못했어요')); },
   tFree(d){ const r = (classData || {})['g' + d.g] || {}, uid = (r.seats || {})[d.r]; if (!confirm(`${d.g}번 파티 ${RN(d.r)} 자리를 비울까요? (그 학생이 다시 고를 수 있어요)`)) return; const p = `escape/c${teacher.cls}/g${d.g}`; const o = {[`${p}/seats/${d.r}`]:null, [`${p}/members/${d.r}`]:null}; if (uid) { o[`${p}/uids/${uid}`] = null; o[`players/${uid}`] = null; } DB.update('', o).catch(() => toast('지우지 못했어요')); },
   async switchRole(d){
@@ -798,11 +811,12 @@ const ACT = {
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
   const act = b.dataset.act;
-  const free = ['resume','forget','tLockToggle','trialHidden','tFree','tClose','exitTrial','pickNum','toCards','toGroup','dice','music','toEntry','help','helpClose','quickDemo','switchRole','demoReset','potion','leave','trollClose','pickRole','enter','teacher','tBack','tResetGroup','tResetClass'];
+  const free = ['tAddT','tDelT','resume','forget','tLockToggle','trialHidden','tFree','tClose','exitTrial','pickNum','toCards','toGroup','dice','music','toEntry','help','helpClose','quickDemo','switchRole','demoReset','potion','leave','trollClose','pickRole','enter','teacher','tBack','tResetGroup','tResetClass'];
   if (me && room && isStunned(me.role) && !free.includes(act)) return toast('😵 기절 중이야! 물약을 쓰거나 힐러를 기다려');
   ACT[act] && ACT[act](b.dataset, b);
 });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.id === 'tEmail') ACT.tAddT();
   if (e.key === 'Enter' && e.target.matches('input[data-cell]')) ACT.cell({p:e.target.dataset.cell});
 });
 document.addEventListener('change', e => {
@@ -1751,10 +1765,18 @@ function showTeacher(){
   setScreen('teacher', `<div class="wrap"><div class="card"><div class="row" style="justify-content:space-between">
     <h2 class="jua">👩‍🏫 선생님 화면</h2><div class="row"><select id="tCls">${Array.from({length:CLASS_COUNT}, (_, i) => `<option value="${i+1}" ${i+1 === teacher.cls ? 'selected' : ''}>${i+1}반</option>`).join('')}</select>
     <span id="tLock"></span><button class="btn red sm" data-act="tResetClass">이 반 기록 모두 지우기</button><button class="btn sm" data-act="tBack">로그아웃</button></div></div>
-    ${MODE_BANNER()}<div id="tBoard" style="margin-top:10px"></div></div>${FOOT}</div>`);
+    ${MODE_BANNER()}<div id="tBoard" style="margin-top:10px"></div><div id="tTeachers"></div></div>${FOOT}</div>`);
   watchTeacher();
+  if (isOwner) { if (unsubT) unsubT(); unsubT = DB.watch('teachers', v => renderTeachers(v || {})); }
 }
-let unsubLock = null, classLocked = false;
+let unsubLock = null, classLocked = false, unsubT = null;
+function renderTeachers(T){
+  const el = $('#tTeachers'); if (!el) return;
+  const list = Object.keys(T).filter(k => T[k]).map(k => k.replace(/,/g, '.'));
+  paint(el, `<div class="box"><b>👥 함께 쓰는 선생님</b> <span class="muted" style="font-size:13px">(여기 추가된 Google 계정은 선생님 화면에 들어올 수 있어요 · 관리는 ${esc(TEACHER_EMAIL)}만)</span>
+    <div class="row" style="margin-top:8px;gap:6px">${list.length ? list.map(e => `<span class="pill">${esc(e)} <button class="btn sm" style="padding:0 6px" data-act="tDelT" data-e="${esc(e)}">✕</button></span>`).join('') : '<span class="muted">아직 없어요</span>'}</div>
+    <div class="row" style="margin-top:8px"><input id="tEmail" type="email" placeholder="선생님 Gmail 주소" autocomplete="off" style="font:inherit;padding:7px 10px;border-radius:10px;border:2px solid #8b5cf6;background:#0b0e1c;color:var(--text);min-width:260px"><button class="btn primary sm" data-act="tAddT">추가</button></div></div>`);
+}
 function watchTeacher(){
   if (unsubLock) unsubLock();
   unsubLock = DB.watch(`locks/c${teacher.cls}`, v => { classLocked = !!v; const el = $('#tLock'); if (el) el.innerHTML = `<button class="btn sm ${classLocked ? 'green' : 'gold'}" data-act="tLockToggle">${classLocked ? '🔓 입장 다시 열기' : '🔒 입장 마감'}</button>`; });
@@ -1793,7 +1815,7 @@ function renderTeacher(){
       ${done.map((x, i) => `<tr><td>${medal[i] || i + 1}</td><td>${x.g}번 파티${x.sus ? ' ⚠️' : ''}</td><td>${esc(x.names.join(', '))}</td><td>${fmt(x.t)}</td><td>${x.it.gem || 0}</td><td>${x.it.gold || 0}</td></tr>`).join('')}</table>`
       : '<p class="muted">아직 골렘을 쓰러뜨린 파티가 없어요</p>'}</div>
     <div style="overflow-x:auto"><table class="rank"><tr><th>파티</th><th>모험가 (✕ 자리 비우기)</th><th>단계</th><th>시간</th><th>보물</th><th>이해 대기</th><th>확인 필요</th><th></th></tr>${rows}</table></div>
-    <p class="muted" style="font-size:13px">🔒 모든 학생이 들어오면 <b>입장 마감</b>을 눌러 주세요. 다른 파티 빈자리에 몰래 들어오는 것을 막아요. · ⚠️ 표시는 너무 빠르게 해결된 기록이에요. 해당 파티에게 어떻게 풀었는지 물어봐 주세요. · 수업이 끝나면 <b>이 반 기록 모두 지우기</b>를 눌러 학생 이름을 지워 주세요.</p>`);
+    <p class="muted" style="font-size:13px">🔒 파티가 시작되고 5분이 지나면 빈자리가 <b>자동으로 닫혀요</b>. 더 일찍 막고 싶으면 <b>입장 마감</b>을 눌러 주세요. · ⚠️ 표시는 너무 빠르게 해결된 기록이에요. 해당 파티에게 어떻게 풀었는지 물어봐 주세요. · 수업이 끝나면 <b>이 반 기록 모두 지우기</b>를 눌러 학생 이름을 지워 주세요.</p>`);
 }
 setInterval(() => { if (screen === 'teacher') renderTeacher(); }, 3000);
 
