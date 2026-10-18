@@ -296,7 +296,7 @@ canvas.sim[data-sim="ball"]{height:min(23vh,190px)}
 <div id="app"></div>
 <div id="overlay"></div>
 <div id="toast"></div>
-<div id="musicBox"><button class="btn sm" id="musicBtn" data-act="music">🔇 소리 켜기</button><input id="musicVol" type="range" min="0" max="100" value="55" aria-label="소리 크기" hidden></div>
+<div id="musicBox"><button class="btn sm" id="fsBtn" data-act="fullscreen" hidden>⛶ 전체화면</button><button class="btn sm" id="musicBtn" data-act="music">🔇 소리 켜기</button><input id="musicVol" type="range" min="0" max="100" value="55" aria-label="소리 크기" hidden></div>
 <script>
 /* =========================================================
    ⚙️ 설정 — Firebase 콘솔에서 복사한 값을 붙여 넣으세요.
@@ -685,6 +685,11 @@ const ACT = {
     showEntry();
   },
   music(){ MUSIC.toggle(); },
+  fullscreen(){
+    const d = document, el = d.documentElement;
+    if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    else { const req = el.requestFullscreen || el.webkitRequestFullscreen; if (!req) return toast('이 화면에서는 전체화면을 쓸 수 없어요'); Promise.resolve(req.call(el)).catch(() => toast('전체화면이 막혀 있어요. 키보드의 전체화면 키를 눌러 보세요')); }
+  },
   toEntry(){ showEntry(); window.scrollTo(0, 0); },
   help(){ ui.help = true; if (me && room) render(); else { const o = $('#overlay'); o.innerHTML = `<div class="back"><div class="modal" style="max-width:1000px">${introHTML(true)}</div></div>`; o.__h = null; } },
   helpClose(){ ui.help = false; if (me && room) render(); else { const o = $('#overlay'); o.innerHTML = ''; o.__h = ''; } },
@@ -885,7 +890,7 @@ const ACT = {
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
   const act = b.dataset.act;
-  const free = ['skipBoss','partyEnd','fire','tAddT','tDelT','resume','forget','tLockToggle','trialHidden','tFree','tClose','exitTrial','pickNum','toCards','toGroup','dice','music','toEntry','help','helpClose','quickDemo','switchRole','demoReset','potion','leave','trollClose','pickRole','enter','teacher','tBack','tResetGroup','tResetClass'];
+  const free = ['fullscreen','skipBoss','partyEnd','fire','tAddT','tDelT','resume','forget','tLockToggle','trialHidden','tFree','tClose','exitTrial','pickNum','toCards','toGroup','dice','music','toEntry','help','helpClose','quickDemo','switchRole','demoReset','potion','leave','trollClose','pickRole','enter','teacher','tBack','tResetGroup','tResetClass'];
   if (me && room && isStunned(me.role) && !free.includes(act)) return toast('😵 기절 중이야! 물약을 쓰거나 힐러를 기다려');
   ACT[act] && ACT[act](b.dataset, b);
 });
@@ -1416,6 +1421,13 @@ function moodNow(){
   if (sg === 4) return myLoc() === 'hall' ? 'boss' : 'calm';
   return ['', 'bright', 'outdoor', 'mystic'][sg];
 }
+(function(){
+  const b = document.getElementById('fsBtn'), d = document;
+  if (!b || !(d.fullscreenEnabled || d.webkitFullscreenEnabled)) return;
+  b.hidden = false;
+  const upd = () => { b.textContent = (d.fullscreenElement || d.webkitFullscreenElement) ? '↙ 전체화면 끄기' : '⛶ 전체화면'; };
+  d.addEventListener('fullscreenchange', upd); d.addEventListener('webkitfullscreenchange', upd);
+})();
 document.addEventListener('input', e => {
   if (e.target.id === 'musicVol') MUSIC.setVol(e.target.value / 100);
   if (e.target.id === 'nameIn') {
