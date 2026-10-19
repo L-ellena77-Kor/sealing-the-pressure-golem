@@ -1,21 +1,15 @@
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>압력 골렘의 봉인</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <style>
-:root{--bg:#0d1020;--panel:#171b31;--panel2:#20253f;--line:#2f3660;--text:#eef0ff;--muted:#9ea6cc;--gold:#ffd166;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--purple:#c084fc}
+:root{color-scheme:dark;--bg:#0d1020;--panel:#171b31;--panel2:#20253f;--line:#2f3660;--text:#eef0ff;--muted:#9ea6cc;--gold:#ffd166;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--purple:#c084fc}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:17px;line-height:1.5}
 body{background:radial-gradient(1200px 600px at 70% -10%,#2a1f5a 0,transparent 60%),var(--bg);min-height:100vh}
 h1,h2,h3,.jua{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;margin:0}
-.wrap{max-width:1300px;margin:0 auto;padding:14px 16px 30px}
+.wrap{max-width:1300px;margin:0 auto;padding-block:14px 30px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
 .card+.card{margin-top:12px}
 .muted{color:var(--muted)}
@@ -291,8 +285,6 @@ canvas.sim[data-sim="ball"]{height:min(23vh,190px)}
 .cards .pc-stats{grid-template-columns:repeat(3,auto minmax(0,1fr));font-size:11px;gap:2px 5px}.cards .pc-owner{min-height:28px;font-size:19px;padding-top:4px}
 .namebox{margin-top:8px}.namebox input{font-size:20px;padding:7px 10px;width:180px}
 </style>
-</head>
-<body>
 <div id="app"></div>
 <div id="overlay"></div>
 <div id="toast"></div>
@@ -541,6 +533,8 @@ function toast(t){ const el = $('#toast'); el.textContent = t; el.style.display 
 
 function members(){ return (room && room.members) || {}; }
 function joined(){ return ROLE_ORDER.filter(r => members()[r]); }
+function fullOf(r){ const M = (r && r.members) || {}; return BASE.every(x => M[x]); }
+function fullParty(){ return fullOf(room); }
 function stOf(r, id){ return (r && r.st && r.st[id]) || {}; }
 function st(id){ return stOf(room, id); }
 function solved(id){ return !!st(id).solved; }
@@ -562,23 +556,18 @@ function items(){ return (room && room.items) || {}; }
 function actors(id){
   const P = PLACES[id]; const req = P.need === 'all' ? BASE : P.need;
   const map = {}, used = new Set(), M = members(), j = joined();
-  for (const r of req) if (M[r]) { map[r] = r; used.add(r); }
-  for (const r of req) {
-    if (map[r]) continue;
-    const pick = ['warrior', ...ROLE_ORDER].find(x => M[x] && !used.has(x)) || j[0];
-    if (pick) { map[r] = pick; used.add(pick); }
-  }
+  for (const r of req) map[r] = r;   // 대신 맡기 없음: 그 역할이 직접 와야 함
   return map;
 }
 function myDuties(id){ const a = actors(id); return Object.keys(a).filter(r => a[r] === me.role); }
 function presentAt(id){ return joined().filter(r => members()[r].loc === id); }
 function presenceOK(id){
-  if (PLACES[id].need === 'all') return joined().length > 0 && joined().every(r => members()[r].loc === id);
-  return Object.values(actors(id)).every(r => members()[r] && members()[r].loc === id);
+  if (PLACES[id].need === 'all') return fullParty() && joined().every(r => members()[r].loc === id);
+  return fullParty() && Object.values(actors(id)).every(r => members()[r] && members()[r].loc === id);
 }
 function missingAt(id){
   if (PLACES[id].need === 'all') return joined().filter(r => members()[r].loc !== id);
-  return [...new Set(Object.values(actors(id)))].filter(r => members()[r].loc !== id);
+  return [...new Set(Object.values(actors(id)))].filter(r => !members()[r] || members()[r].loc !== id);
 }
 
 /* ===================== 게임 동작 ===================== */
@@ -657,7 +646,6 @@ const ACT = {
     }
     const r = (await DB.get(path).catch(() => null)) || {};
     const ex = r.members && r.members[entry.role];
-    if (!r.startedAt) { await DB.update(path, {startedAt:NOW}).catch(() => {}); DB.push(path + '/log', {t:now(), m:'🗺️ 모험 시작!'}).catch(() => {}); }
     if (!ex) await DB.update(path, {[`members/${entry.role}`]:{loc:'gate', hp:3, stunUntil:0, seen:now(), name:nm}});
     else await DB.update(path, {[`members/${entry.role}/name`]:nm, [`members/${entry.role}/seen`]:now()});
     DB.push(path + '/log', {t:now(), m:`🙋 ${RN(entry.role)} ${J(nm, '이', '가')} 파티에 합류했다`});
@@ -666,6 +654,8 @@ const ACT = {
       for (const r of BASE) if (r !== entry.role) { o[`members/${r}`] = {loc:'gate', hp:3, stunUntil:0, seen:now(), name:DEMO_NAMES[r]}; o[`seats/${r}`] = 'demo-' + r; }
       await DB.update(path, o);
     }
+    const r2 = (await DB.get(path).catch(() => null)) || {};
+    if (!r2.startedAt && fullOf(r2)) { await DB.update(path, {startedAt:NOW}).catch(() => {}); DB.push(path + '/log', {t:now(), m:'🗺️ 4명이 모두 모였다! 모험 시작!'}).catch(() => {}); }
     me = {cls:entry.cls, grp:entry.grp, role:entry.role, name:nm}; entry.resume = null;
     try { sessionStorage.setItem('pq_me2', JSON.stringify(me)); } catch(e){}
     if (unsubEntry) { unsubEntry(); unsubEntry = null; }
@@ -674,7 +664,7 @@ const ACT = {
   resume(){ const r = entry.resume; if (!r) return; entry.resume = null; if (unsubEntry) { unsubEntry(); unsubEntry = null; } me = r; startRoom(); },
   forget(){ entry.resume = null; try { sessionStorage.removeItem('pq_me2'); } catch(e){} renderEntry(); },
   start(){
-    if (joined().length < 2) return toast('2명 이상 모여야 출발할 수 있어!');
+    if (!fullParty()) return toast('용사·마법사·성직자·힐러 4명이 모두 들어와야 출발할 수 있어!');
     upd({startedAt:now()}); log('🗺️ 모험 시작!');
   },
   leave(){
@@ -1587,7 +1577,8 @@ function render(){
   }
   renderedOnce = true;
   sfxDiff();
-  if (!room.startedAt) renderLobby(); else renderGame();
+  if (!room.startedAt && fullParty()) { upd({startedAt:NOW}); log('🗺️ 4명이 모두 모였다! 모험 시작!'); }
+  if (!room.startedAt || !fullParty()) renderLobby(); else renderGame();
   renderOverlay();
 }
 function renderLobby(){
@@ -1598,8 +1589,8 @@ function renderLobby(){
     <div class="seats">${ROLE_ORDER.map(r => members()[r]
       ? `<div class="seat in" style="--c:${CHARS.color(r)}">${portrait(r)}<b>${esc(NAME(r) || RN(r))}</b>${RN(r)}${r === me.role ? ' · 나' : ''}</div>`
       : `<div class="seat"><div style="font-size:40px;margin:14px 0 8px">❔</div><b>빈 자리</b>${RN(r)}${r === 'warrior' ? ' (5명 모둠)' : ''}</div>`).join('')}</div>
-    <div style="text-align:center"><button class="btn primary big ${j.length >= 2 ? 'myturn' : ''}" data-act="start" ${j.length < 2 ? 'disabled' : ''} style="font-size:24px;padding:16px 34px">🗺️ 모험 시작! (${j.length}명)</button>
-    <p class="muted">모둠 친구가 모두 들어오면 누구든 눌러!</p></div>
+    <div style="text-align:center"><div class="jua" style="font-size:26px;margin:6px 0">${fullParty() ? '🗺️ 모험 시작!' : `⏳ 친구를 기다리는 중… (${BASE.filter(x => members()[x]).length} / 4)`}</div>
+    <p class="muted">${room.startedAt ? '⚠️ 파티원 자리가 비었어요. 4명이 다시 모여야 계속할 수 있어요.' : '용사·마법사·성직자·힐러 4명이 모두 들어오면 자동으로 시작해요. (전사는 5명 모둠만)'}</p></div>
     <div class="row" style="justify-content:center"><button class="btn sm" data-act="leave">나가기</button><button class="btn sm" data-act="help">❓ 게임 방법</button></div>`);
 }
 
@@ -2028,5 +2019,5 @@ setInterval(() => { if (screen === 'teacher') renderTeacher(); }, 3000);
   showEntry();
 })();
 </script>
-</body>
-</html>
+
+</body></html>
